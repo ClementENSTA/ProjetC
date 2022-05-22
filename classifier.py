@@ -8,15 +8,17 @@ import numpy as np
 
 ### Entraînement du classifieur
 
-PATH = r'./features.csv'
+PATH = r'./data/features.csv'
 
-dataset = pd.read_csv(PATH,sep=';')
-columns = dataset.columns.tolist() # get the columns
+dataset = np.genfromtxt(PATH, delimiter=";")
 
-batch_audio = pd.DataFrame(dataset).to_numpy()
+features = dataset[:, 1:-1] # prend tout le tableau sauf la première et la dernière colonne. 
 
-features = batch_audio[:, 1:]
-y = batch_audio[:, 0]
+print(f"Le tableau des descripteurs est de dimension : {features.shape}.") 
+
+# Il devrait être de dimensions 1000 x 514, si le nombre de colonne n'est pas le bon vous pouvez modifier features = dataset[:, 1:-1] par features = dataset[:, 1:-2] (cela supprime les 2 dernières colonnes)
+
+y = dataset[:, 0]
 
 X_train, X_test, y_train, y_test = train_test_split(features, y, test_size=0.2, random_state=0)
 
@@ -31,32 +33,32 @@ print("Performances du modèle sur la base de données de test : ", model.score(
 
 ### Save W and b
 
-b = model.intercept_
-w = model.coef_
+# b = model.intercept_
+# w = model.coef_
 
-np.savetxt("path to w", w, fmt='%.4f',delimiter=",")
-np.savetxt("path to b", b, fmt='%.4f',delimiter=",")
+# np.savetxt("path to w", w, fmt='%.4f',delimiter=",")
+# np.savetxt("path to b", b, fmt='%.4f',delimiter=",")
 
 ### Plot Confusion Matrix
 
-labels = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
+# labels = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 
-fig, ax = plt.subplots(figsize=(10, 10), dpi=300)
-plot_confusion_matrix(model, X_test, y_test, ax=ax, normalize='true', display_labels=labels)
-plt.savefig('confusion.png',transparent=False, facecolor='white' )
+# fig, ax = plt.subplots(figsize=(10, 10), dpi=300)
+# plot_confusion_matrix(model, X_test, y_test, ax=ax, normalize='true', display_labels=labels)
+# plt.savefig('confusion.png',transparent=False, facecolor='white' )
 
 
 ### Technique pour obtenir une nette amélioration des performances : normaliser les entrées du classifieur avec la batch normalization (Xi - mean / (std + epsilon)) 
 
-def normalize(X):
-         '''
-         Batch normalization
-         '''
-         X_normalized = np.zeros((X.shape))
-         for j in range(X.shape[1]):
-             mean = np.mean(X[:, j])
-             std = np.std(X[:, j])
-             for i in range(X.shape[0]):
-                 X_normalized[i, j] = (X[i, j] - mean) / (std + 0.000001)
-         return X_normalized
+    # def normalize(X):
+    #     '''
+    #     Batch normalization
+    #     '''
+    #     X_normalized = np.zeros((X.shape))
+    #     for j in range(X.shape[1]):
+    #         mean = np.mean(X[:, j])
+    #         std = np.std(X[:, j])
+    #         for i in range(X.shape[0]):
+    #             X_normalized[i, j] = (X[i, j] - mean) / (std + 0.000001)
+    #     return X_normalized
