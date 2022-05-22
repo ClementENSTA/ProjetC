@@ -261,6 +261,4 @@ double* audioread(char* nom_f_audio, int* p_freq, int* p_taille) {
   milliseconds = atoi(decimalpart);	
 
 
-  sprintf(hms, "%d:%d:%d.%d", hours, minutes, seconds, milliseconds);
-  return hms;
-}
+  sprintf(hms, "%d:%d:%d.%d", hours, minutes,
