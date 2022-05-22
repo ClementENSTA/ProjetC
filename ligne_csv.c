@@ -24,7 +24,7 @@ void ligne_csv(char* nom_f_audio, FILE* f_csv, int genre){
 	int windowSize = 512;
 	int hop_size = 512;
 	int samples = (taille/(windowSize/2))*((windowSize/2)+1);
-	double magnitude[samples];
+	double* magnitude = malloc(samples * sizeof(double));
 	printf("frequence: %d\n", frequence);
 	printf("taille: %d\n", taille);
 	
@@ -52,12 +52,16 @@ void ligne_csv(char* nom_f_audio, FILE* f_csv, int genre){
 		
 		fprintf(f_csv, "%.2f, %.2f, ", mu_et_sigma[0], mu_et_sigma[1]); 
 		
+		free(mu_et_sigma);
+		
 	} /* for(k=0; k<((windowSize/2)+1); k++) */
 	
 	fprintf(f_csv, "\n"); 
+	free(wav_data);
+	free(magnitude);
+
 
 
 }
-
 
 
